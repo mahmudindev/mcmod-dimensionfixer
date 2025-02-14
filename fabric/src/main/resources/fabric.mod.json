@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "dimensionfixer",
+  "version": "${version}",
+  "name": "Dimension Fixer",
+  "description": "Fix hardcoded behavior of dimension mainly for mirror dimension.",
+  "authors": [
+    "mahmudindev"
+  ],
+  "contact": {
+    "homepage": "https://github.com/mahmudindev",
+    "sources": "https://github.com/mahmudindev/mcmod-dimensionlink"
+  },
+  "license": "ARR",
+  "icon": "assets/dimensionfixer/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.mahmudindev.mcmod.dimensionfixer.fabric.DimensionFixerFabric"
+    ],
+    "client": [
+      "com.github.mahmudindev.mcmod.dimensionfixer.fabric.client.DimensionFixerFabricClient"
+    ]
+  },
+  "mixins": [
+    "dimensionfixer.mixins.json",
+    "dimensionfixer_platform.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

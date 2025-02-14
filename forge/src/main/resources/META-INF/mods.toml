@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+issueTrackerURL = "https://github.com/mahmudindev/mcmod-dimensionlink/issues"
+license = "ARR"
+
+[[mods]]
+modId = "dimensionfixer"
+version = "${version}"
+displayName = "Dimension Fixer"
+authors = "mahmudindev"
+description = '''
+Fix hardcoded behavior of dimension mainly for mirror dimension.
+'''
+#logoFile = ""
+
+[[dependencies.dimensionfixer]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dimensionfixer]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.github.mahmudindev.mcmod.dimensionfixer.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "MinecraftClientMixin"
+  ],
+  "mixins": [
+    "LocationPredicateMixin",
+    "MapItemSavedDataMixin",
+    "ServerLevelMixin",
+    "ServerPlayerMixin",
+    "TheEndGatewayBlockEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
