@@ -22,7 +22,7 @@ public abstract class MinecraftClientMixin {
                     target = "Lnet/minecraft/world/level/Level;END:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> getSituationalMusicModifyEndKey(
+    private ResourceKey<Level> getSituationalMusicEndKey(
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();
@@ -40,7 +40,7 @@ public abstract class MinecraftClientMixin {
                     target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> getSituationalMusicModifyNetherKey(
+    private ResourceKey<Level> getSituationalMusicNetherKey(
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();

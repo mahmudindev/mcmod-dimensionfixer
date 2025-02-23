@@ -17,7 +17,7 @@ public abstract class TheEndGatewayBlockEntityMixin {
                     target = "Lnet/minecraft/world/level/Level;END:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private static ResourceKey<Level> teleportEntityModifyEndKey(
+    private static ResourceKey<Level> teleportEntityEndKey(
             ResourceKey<Level> original,
             Level level
     ) {

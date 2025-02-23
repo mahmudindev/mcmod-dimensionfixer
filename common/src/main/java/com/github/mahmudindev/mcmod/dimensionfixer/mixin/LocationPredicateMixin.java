@@ -23,7 +23,7 @@ public abstract class LocationPredicateMixin {
                     target = "Lnet/minecraft/server/level/ServerLevel;dimension()Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> matchesDimension(
+    private ResourceKey<Level> matchesDimensionMask(
             ServerLevel instance,
             Operation<ResourceKey<Level>> original
     ) {

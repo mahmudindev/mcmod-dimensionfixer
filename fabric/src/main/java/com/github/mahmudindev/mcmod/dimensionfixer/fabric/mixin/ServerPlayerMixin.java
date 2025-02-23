@@ -22,7 +22,7 @@ public abstract class ServerPlayerMixin {
                     ordinal = 1
             )
     )
-    private ResourceKey<Level> changeDimensionModifyNetherTrigger0(
+    private ResourceKey<Level> changeDimensionNetherTrigger0(
             ResourceKey<Level> original
     ) {
         ServerLevel serverLevel = this.serverLevel();
@@ -42,7 +42,7 @@ public abstract class ServerPlayerMixin {
                     target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> changeDimensionModifyNetherTrigger1(
+    private ResourceKey<Level> changeDimensionNetherTrigger1(
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {

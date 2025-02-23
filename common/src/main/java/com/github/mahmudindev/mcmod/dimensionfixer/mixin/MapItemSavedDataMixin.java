@@ -25,7 +25,7 @@ public abstract class MapItemSavedDataMixin {
                     target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> getSituationalMusicModifyNetherKey(
+    private ResourceKey<Level> addDecorationNetherKey(
             ResourceKey<Level> original,
             MapDecoration.Type type,
             LevelAccessor levelAccessor

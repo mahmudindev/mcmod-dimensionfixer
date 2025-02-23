@@ -60,7 +60,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
                     target = "Lnet/minecraft/world/level/Level;END:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> initDragonFight(ResourceKey<Level> original) {
+    private ResourceKey<Level> initDragonFightEndKey(ResourceKey<Level> original) {
         return this.dimension();
     }
 
@@ -71,7 +71,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
                     target = "Lnet/minecraft/world/level/storage/WorldData;endDragonFightData()Lnet/minecraft/world/level/dimension/end/EndDragonFight$Data;"
             )
     )
-    private EndDragonFight.Data initDragonFightSata(
+    private EndDragonFight.Data initDragonFightDataLoad(
             WorldData instance,
             Operation<EndDragonFight.Data> original
     ) {
@@ -95,7 +95,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
                     target = "Lnet/minecraft/world/level/storage/WorldData;setEndDragonFightData(Lnet/minecraft/world/level/dimension/end/EndDragonFight$Data;)V"
             )
     )
-    private void saveLevelDataSetEndDragonFightData(
+    private void saveLevelDataSetEndDragonFightDataSave(
             WorldData instance,
             EndDragonFight.Data data,
             Operation<Void> original

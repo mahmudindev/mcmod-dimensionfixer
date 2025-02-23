@@ -11,7 +11,7 @@ authors = "mahmudindev"
 description = '''
 Fix hardcoded behavior of dimension mainly for mirror dimension.
 '''
-#logoFile = ""
+logoFile = "assets/dimensionfixer/icon.png"
 
 [[dependencies.dimensionfixer]]
 modId = "forge"
