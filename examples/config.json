@@ -1,0 +1,40 @@
+{
+  "aliases": {
+    "minecraft:overworld": {
+      "dimension_types": [
+        "minecraft:overworld",
+        "minecraft:overworld_caves",
+        "customdimensiontype:overworld_mirror"
+      ],
+      "dimensions": [
+        "customdimension:overworld_mirror"
+      ]
+    },
+    "minecraft:the_nether": {
+      "dimension_types": [
+        "minecraft:the_nether",
+        "customdimensiontype:the_nether_mirror"
+      ],
+      "dimensions": [
+        "customdimension:the_nether_mirror"
+      ]
+    },
+    "minecraft:the_end": {
+      "dimension_types": [
+        "minecraft:the_end",
+        "customdimensiontype:the_end_mirror"
+      ],
+      "dimensions": [
+        "customdimension:the_end_mirror"
+      ]
+    },
+    "customdimension:dimension": {
+      "dimension_types": [
+        "customdimensiontype:dimension_mirror"
+      ],
+      "dimensions": [
+        "customdimension:dimension_mirror"
+      ]
+    }
+  }
+}

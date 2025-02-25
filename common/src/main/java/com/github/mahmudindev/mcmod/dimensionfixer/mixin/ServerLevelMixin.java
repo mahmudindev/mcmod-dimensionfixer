@@ -1,6 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
-import com.github.mahmudindev.mcmod.dimensionfixer.world.DragonFightData;
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DragonFight;
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
-    @Unique private DragonFightData dragonFightData;
+    @Unique private DragonFight dragonFight;
 
     @Shadow public abstract DimensionDataStorage getDataStorage();
 
@@ -61,7 +62,28 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             )
     )
     private ResourceKey<Level> initDragonFightEndKey(ResourceKey<Level> original) {
-        return this.dimension();
+        if (DimensionManager.isAlias(this, Level.END)) {
+            return this.dimension();
+        }
+
+        return original;
+    }
+
+    @ModifyExpressionValue(
+            method = "<init>",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/level/dimension/BuiltinDimensionTypes;END:Lnet/minecraft/resources/ResourceKey;"
+            )
+    )
+    private ResourceKey<DimensionType> initDragonFightEndTypeKey(
+            ResourceKey<DimensionType> original
+    ) {
+        if (DimensionManager.isAlias(this, Level.END)) {
+            return this.dimensionTypeId();
+        }
+
+        return original;
     }
 
     @WrapOperation(
@@ -76,13 +98,13 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             Operation<EndDragonFight.Data> original
     ) {
         if (this.dimension() != Level.END) {
-            this.dragonFightData = this.getDataStorage().computeIfAbsent(
-                    DragonFightData::load,
-                    DragonFightData::new,
-                    DragonFightData.FIELD
+            this.dragonFight = this.getDataStorage().computeIfAbsent(
+                    DragonFight::load,
+                    DragonFight::new,
+                    DragonFight.FIELD
             );
 
-            return this.dragonFightData.loadData();
+            return this.dragonFight.loadData();
         }
 
         return original.call(instance);
@@ -101,7 +123,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             Operation<Void> original
     ) {
         if (this.dimension() != Level.END) {
-            this.dragonFightData.saveData(data);
+            this.dragonFight.saveData(data);
 
             return;
         }

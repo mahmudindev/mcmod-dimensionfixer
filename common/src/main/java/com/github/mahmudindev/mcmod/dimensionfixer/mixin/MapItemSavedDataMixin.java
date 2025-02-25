@@ -1,12 +1,12 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.spongepowered.asm.mixin.Final;
@@ -35,7 +35,7 @@ public abstract class MapItemSavedDataMixin {
             if (minecraftServer != null) {
                 ServerLevel serverLevel = minecraftServer.getLevel(this.dimension);
                 if (serverLevel != null) {
-                    if (serverLevel.dimensionTypeId() == BuiltinDimensionTypes.NETHER) {
+                    if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
                         return this.dimension;
                     }
                 }

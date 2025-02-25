@@ -8,7 +8,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class DragonFightData extends SavedData {
+public class DragonFight extends SavedData {
     public static String FIELD = "dragon_fight";
 
     private EndDragonFight.Data data;
@@ -49,10 +49,10 @@ public class DragonFightData extends SavedData {
         this.setDirty();
     }
 
-    public static DragonFightData load(CompoundTag compoundTag) {
-        DragonFightData dragonFightData = new DragonFightData();
+    public static DragonFight load(CompoundTag compoundTag) {
+        DragonFight dragonFight = new DragonFight();
 
-        dragonFightData.data = new EndDragonFight.Data(
+        dragonFight.data = new EndDragonFight.Data(
                 compoundTag.getBoolean("NeedsStateScanning"),
                 compoundTag.getBoolean("DragonKilled"),
                 compoundTag.getBoolean("PreviouslyKilled"),
@@ -72,6 +72,6 @@ public class DragonFightData extends SavedData {
                 })
         );
 
-        return dragonFightData;
+        return dragonFight;
     }
 }

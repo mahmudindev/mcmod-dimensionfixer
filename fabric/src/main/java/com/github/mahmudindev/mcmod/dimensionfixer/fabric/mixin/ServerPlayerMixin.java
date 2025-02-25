@@ -1,11 +1,11 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.fabric.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,9 +26,7 @@ public abstract class ServerPlayerMixin {
             ResourceKey<Level> original
     ) {
         ServerLevel serverLevel = this.serverLevel();
-        if (serverLevel.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD) {
-            return serverLevel.dimension();
-        } else if (serverLevel.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD_CAVES) {
+        if (DimensionManager.isAlias(serverLevel, Level.OVERWORLD)) {
             return serverLevel.dimension();
         }
 
@@ -46,7 +44,7 @@ public abstract class ServerPlayerMixin {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (serverLevel.dimensionTypeId() == BuiltinDimensionTypes.NETHER) {
+        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 

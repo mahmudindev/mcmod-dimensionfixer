@@ -1,12 +1,14 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.forge.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,8 +47,12 @@ public abstract class ServerPlayerMixin {
 
             Entity entityX = repositionEntity.apply(spawnPortal);
 
-            this.previousEnteredNetherPosition = this.enteredNetherPosition;
-            this.enteredNetherPosition = originalEnteredNetherPosition;
+            ResourceKey<Level> dimensionA = currentWorld.dimension();
+            ResourceKey<Level> dimensionB = destWorld.dimension();
+            if (dimensionA != Level.OVERWORLD && dimensionB != Level.NETHER) {
+                this.previousEnteredNetherPosition = this.enteredNetherPosition;
+                this.enteredNetherPosition = originalEnteredNetherPosition;
+            }
 
             return entityX;
         };
@@ -66,13 +72,15 @@ public abstract class ServerPlayerMixin {
             ServerLevel serverLevel,
             Operation<Void> original
     ) {
-        ServerLevel serverLevelX = this.serverLevel();
-
-        boolean flag0 = serverLevelX.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD
-                || serverLevelX.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD_CAVES;
-        boolean flag1 = serverLevel.dimensionTypeId() == BuiltinDimensionTypes.NETHER;
-        if (flag0 && flag1) {
+        if (this.previousEnteredNetherPosition != null && DimensionManager.isAlias(
+                this.serverLevel(),
+                Level.OVERWORLD
+        ) && DimensionManager.isAlias(
+                serverLevel,
+                Level.NETHER
+        )) {
             this.enteredNetherPosition = this.previousEnteredNetherPosition;
+            this.previousEnteredNetherPosition = null;
         }
 
         original.call(serverLevel);

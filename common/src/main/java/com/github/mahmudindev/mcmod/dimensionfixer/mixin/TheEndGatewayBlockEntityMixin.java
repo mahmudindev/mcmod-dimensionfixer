@@ -1,10 +1,10 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -21,7 +21,7 @@ public abstract class TheEndGatewayBlockEntityMixin {
             ResourceKey<Level> original,
             Level level
     ) {
-        if (level.dimensionTypeId() == BuiltinDimensionTypes.END) {
+        if (DimensionManager.isAlias(level, Level.END)) {
             return level.dimension();
         }
 

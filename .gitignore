@@ -22,4 +22,5 @@ build
 .gradle
 
 # Others
+!examples/**
 run

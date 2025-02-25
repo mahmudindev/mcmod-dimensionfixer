@@ -1,11 +1,11 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,7 +26,7 @@ public abstract class MinecraftClientMixin {
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();
-        if (level.dimensionTypeId() == BuiltinDimensionTypes.END) {
+        if (DimensionManager.isAlias(level, Level.END)) {
             return level.dimension();
         }
 
@@ -44,7 +44,7 @@ public abstract class MinecraftClientMixin {
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();
-        if (level.dimensionTypeId() == BuiltinDimensionTypes.NETHER) {
+        if (DimensionManager.isAlias(level, Level.NETHER)) {
             return level.dimension();
         }
 

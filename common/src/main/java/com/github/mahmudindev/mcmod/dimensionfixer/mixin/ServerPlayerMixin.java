@@ -1,20 +1,24 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
@@ -38,41 +42,34 @@ public abstract class ServerPlayerMixin extends Player {
             ServerLevel serverLevel,
             CallbackInfo ci
     ) {
-        ResourceKey<Level> dimensionA = serverLevel.dimension();
-        ResourceKey<DimensionType> dimensionTypeA = serverLevel.dimensionTypeId();
-        if (dimensionTypeA == BuiltinDimensionTypes.OVERWORLD) {
-            dimensionA = Level.OVERWORLD;
-        } else if (dimensionTypeA == BuiltinDimensionTypes.OVERWORLD_CAVES) {
-            dimensionA = Level.OVERWORLD;
-        } else if (dimensionTypeA == BuiltinDimensionTypes.NETHER) {
-            dimensionA = Level.NETHER;
-        } else if (dimensionTypeA == BuiltinDimensionTypes.END) {
-            dimensionA = Level.END;
-        }
+        ResourceKey<Level> dimensionA0 = serverLevel.dimension();
+        List<ResourceKey<Level>> dimensionA1List = new LinkedList<>();
+        ResourceKey<Level> dimensionB0 = this.level().dimension();
+        List<ResourceKey<Level>> dimensionB1List = new LinkedList<>();
 
-        Level level = this.level();
+        ResourceKey<DimensionType> dimensionTypeA0 = serverLevel.dimensionTypeId();
+        ResourceKey<DimensionType> dimensionTypeB0 = this.level().dimensionTypeId();
+        DimensionManager.getAliases().forEach((k, v) -> {
+            if (v.containDimension(dimensionA0) || v.containDimensionType(dimensionTypeA0)) {
+                dimensionA1List.add(ResourceKey.create(Registries.DIMENSION, k));
+            }
 
-        ResourceKey<Level> dimensionB = level.dimension();
-        ResourceKey<DimensionType> dimensionTypeB = level.dimensionTypeId();
-        if (dimensionTypeB == BuiltinDimensionTypes.OVERWORLD) {
-            dimensionB = Level.OVERWORLD;
-        } else if (dimensionTypeA == BuiltinDimensionTypes.OVERWORLD_CAVES) {
-            dimensionB = Level.OVERWORLD;
-        } else if (dimensionTypeB == BuiltinDimensionTypes.NETHER) {
-            dimensionB = Level.NETHER;
-        } else if (dimensionTypeB == BuiltinDimensionTypes.END) {
-            dimensionB = Level.END;
-        }
+            if (v.containDimension(dimensionB0) || v.containDimensionType(dimensionTypeB0)) {
+                dimensionB1List.add(ResourceKey.create(Registries.DIMENSION, k));
+            }
+        });
 
-        if (dimensionA == serverLevel.dimension() && dimensionB == level.dimension()) {
-            return;
-        }
+        dimensionA1List.forEach(dimensionA -> dimensionB1List.forEach(dimensionB -> {
+            if (dimensionA == dimensionA0 && dimensionB == dimensionB0) {
+                return;
+            }
 
-        CriteriaTriggers.CHANGED_DIMENSION.trigger(
-                (ServerPlayer) (Object) this,
-                dimensionA,
-                dimensionB
-        );
+            CriteriaTriggers.CHANGED_DIMENSION.trigger(
+                    (ServerPlayer) (Object) this,
+                    dimensionA,
+                    dimensionB
+            );
+        }));
     }
 
     @ModifyExpressionValue(
@@ -87,7 +84,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (serverLevel.dimensionTypeId() == BuiltinDimensionTypes.NETHER) {
+        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 
@@ -105,9 +102,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (level.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD) {
-            return level.dimension();
-        } else if (level.dimensionTypeId() == BuiltinDimensionTypes.OVERWORLD_CAVES) {
+        if (DimensionManager.isAlias(level, Level.OVERWORLD)) {
             return level.dimension();
         }
 
@@ -126,7 +121,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (level.dimensionTypeId() == BuiltinDimensionTypes.NETHER) {
+        if (DimensionManager.isAlias(level, Level.NETHER)) {
             return level.dimension();
         }
 
