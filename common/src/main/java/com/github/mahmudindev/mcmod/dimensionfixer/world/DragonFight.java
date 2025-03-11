@@ -57,18 +57,31 @@ public class DragonFight extends SavedData {
                 compoundTag.getBoolean("DragonKilled"),
                 compoundTag.getBoolean("PreviouslyKilled"),
                 compoundTag.getBoolean("IsRespawning"),
-                Optional.of(compoundTag.getUUID("Dragon")),
-                Optional.of(compoundTag.getIntArray("ExitPortalLocation")).map(is -> {
-                    if (is.length < 3) {
-                        return null;
+                Optional.of(compoundTag.contains("Dragon")).map(exist -> {
+                    if (exist) {
+                        return compoundTag.getUUID("Dragon");
                     }
-                    return new BlockPos(is[0], is[1], is[2]);
+                    return null;
                 }),
-                Optional.of(compoundTag.getIntArray("Gateways")).map(is -> {
-                    if (is.length < 1) {
-                        return null;
+                Optional.of(compoundTag.contains("ExitPortalLocation")).map(exist -> {
+                    if (exist) {
+                        int[] v = compoundTag.getIntArray("ExitPortalLocation");
+                        if (v.length < 3) {
+                            return null;
+                        }
+                        return new BlockPos(v[0], v[1], v[2]);
                     }
-                    return Arrays.stream(is).boxed().toList();
+                    return null;
+                }),
+                Optional.of(compoundTag.contains("Gateways")).map(exist -> {
+                    if (exist) {
+                        int[] v = compoundTag.getIntArray("Gateways");
+                        if (v.length < 1) {
+                            return null;
+                        }
+                        return Arrays.stream(v).boxed().toList();
+                    }
+                    return null;
                 })
         );
 
