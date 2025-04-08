@@ -2,12 +2,13 @@ package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +28,7 @@ public abstract class MapItemSavedDataMixin {
     )
     private ResourceKey<Level> addDecorationNetherKey(
             ResourceKey<Level> original,
-            MapDecoration.Type type,
+            Holder<MapDecorationType> holder,
             LevelAccessor levelAccessor
     ) {
         if (levelAccessor != null) {

@@ -1,6 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.config;
 
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
+import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixerExpectPlatform;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionAliasData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config {
+    private static final Path CONFIG_DIR = DimensionFixerExpectPlatform.getConfigDir();
     private static Config CONFIG = new Config();
 
     private final Map<String, DimensionAliasData> aliases = new HashMap<>();
@@ -37,18 +39,10 @@ public class Config {
         return this.aliases;
     }
 
-    private static Path getPath() {
-        return DimensionFixer.CONFIG_DIR.resolve(DimensionFixer.MOD_ID + ".json");
-    }
-
-    private static File getFile() {
-        return getPath().toFile();
-    }
-
     public static void load() {
         Gson parser = new GsonBuilder().setPrettyPrinting().create();
 
-        File configFile = getFile();
+        File configFile = CONFIG_DIR.resolve(DimensionFixer.MOD_ID + ".json").toFile();
         if (!configFile.exists()) {
             CONFIG.defaults();
 

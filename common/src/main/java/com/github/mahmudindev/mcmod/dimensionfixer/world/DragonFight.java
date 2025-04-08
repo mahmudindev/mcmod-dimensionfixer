@@ -1,6 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.world;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -14,7 +15,7 @@ public class DragonFight extends SavedData {
     private EndDragonFight.Data data;
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         compoundTag.putBoolean("NeedsStateScanning", this.data.needsStateScanning());
         compoundTag.putBoolean("DragonKilled", this.data.dragonKilled());
         compoundTag.putBoolean("PreviouslyKilled", this.data.previouslyKilled());
@@ -47,6 +48,14 @@ public class DragonFight extends SavedData {
     public void saveData(EndDragonFight.Data data) {
         this.data = data;
         this.setDirty();
+    }
+
+    public static SavedData.Factory<DragonFight> factory() {
+        return new SavedData.Factory<>(
+                DragonFight::new,
+                (compoundTag, provider) -> load(compoundTag),
+                null
+        );
     }
 
     public static DragonFight load(CompoundTag compoundTag) {

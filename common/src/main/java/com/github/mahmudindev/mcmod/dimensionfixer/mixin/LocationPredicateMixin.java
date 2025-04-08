@@ -12,9 +12,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import java.util.Optional;
+
 @Mixin(LocationPredicate.class)
 public abstract class LocationPredicateMixin {
-    @Shadow @Final private ResourceKey<Level> dimension;
+    @Shadow @Final private Optional<ResourceKey<Level>> dimension;
 
     @WrapOperation(
             method = "matches",
@@ -27,8 +29,9 @@ public abstract class LocationPredicateMixin {
             ServerLevel instance,
             Operation<ResourceKey<Level>> original
     ) {
-        if (DimensionManager.isAlias(instance, this.dimension)) {
-            return this.dimension;
+        ResourceKey<Level> resourceKey = this.dimension.get();
+        if (DimensionManager.isAlias(instance, resourceKey)) {
+            return resourceKey;
         }
 
         return original.call(instance);

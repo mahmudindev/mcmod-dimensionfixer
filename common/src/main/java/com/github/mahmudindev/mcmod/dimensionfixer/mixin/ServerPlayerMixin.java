@@ -12,7 +12,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.DimensionTransition;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,13 +24,52 @@ import java.util.List;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
-    public ServerPlayerMixin(
+    private ServerPlayerMixin(
             Level level,
             BlockPos blockPos,
             float yRot,
             GameProfile gameProfile
     ) {
         super(level, blockPos, yRot, gameProfile);
+    }
+
+    @Shadow public abstract ServerLevel serverLevel();
+
+    @ModifyExpressionValue(
+            method = "changeDimension",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/level/Level;OVERWORLD:Lnet/minecraft/resources/ResourceKey;"
+            )
+    )
+    private ResourceKey<Level> changeDimensionNetherTrigger0(
+            ResourceKey<Level> original
+    ) {
+        ServerLevel serverLevel = this.serverLevel();
+        if (DimensionManager.isAlias(serverLevel, Level.OVERWORLD)) {
+            return serverLevel.dimension();
+        }
+
+        return original;
+    }
+
+    @ModifyExpressionValue(
+            method = "changeDimension",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
+            )
+    )
+    private ResourceKey<Level> changeDimensionNetherTrigger1(
+            ResourceKey<Level> original,
+            DimensionTransition dimensionTransition
+    ) {
+        ServerLevel serverLevel = dimensionTransition.newLevel();
+        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+            return serverLevel.dimension();
+        }
+
+        return original;
     }
 
     @Inject(
@@ -47,8 +88,8 @@ public abstract class ServerPlayerMixin extends Player {
         ResourceKey<Level> dimensionB0 = this.level().dimension();
         List<ResourceKey<Level>> dimensionB1List = new LinkedList<>();
 
-        ResourceKey<DimensionType> dimensionTypeA0 = serverLevel.dimensionTypeId();
-        ResourceKey<DimensionType> dimensionTypeB0 = this.level().dimensionTypeId();
+        ResourceKey<DimensionType> dimensionTypeA0 = DimensionManager.getType(serverLevel);
+        ResourceKey<DimensionType> dimensionTypeB0 = DimensionManager.getType(this.level());
         DimensionManager.getAliases().forEach((k, v) -> {
             if (v.containDimension(dimensionA0) || v.containDimensionType(dimensionTypeA0)) {
                 dimensionA1List.add(ResourceKey.create(Registries.DIMENSION, k));

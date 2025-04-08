@@ -4,16 +4,22 @@ import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import com.github.mahmudindev.mcmod.dimensionfixer.config.Config;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DimensionManager {
+    public static final ResourceKey<DimensionType> DIRECT_DIMENSION_TYPE = ResourceKey.create(
+            Registries.DIMENSION_TYPE,
+            ResourceLocation.fromNamespaceAndPath(DimensionFixer.MOD_ID, "direct")
+    );
     private static final Map<ResourceLocation, DimensionAliasData> ALIASES = new HashMap<>();
 
     public static void onResourceManagerReload(ResourceManager manager) {
@@ -21,7 +27,7 @@ public class DimensionManager {
 
         Config config = Config.getConfig();
         config.getAliases().forEach((dimension, dimensionAliasData) -> setAlias(
-                new ResourceLocation(dimension),
+                ResourceLocation.parse(dimension),
                 dimensionAliasData
         ));
 
@@ -41,7 +47,7 @@ public class DimensionManager {
 
             try {
                 String dimensionPath = resourcePath
-                        .substring(resourcePath.lastIndexOf("/") + 1)
+                        .substring(resourcePath.indexOf("/") + 1)
                         .replaceAll("\\.json$", "");
 
                 setAlias(resourceLocation.withPath(dimensionPath), gson.fromJson(
@@ -60,15 +66,15 @@ public class DimensionManager {
 
     public static void setAlias(
             ResourceLocation dimension,
-            DimensionAliasData dimensionAliasData
+            DimensionAliasData dimensionAlias
     ) {
         if (!ALIASES.containsKey(dimension)) {
             ALIASES.put(dimension, new DimensionAliasData());
         }
 
         DimensionAliasData dimensionAliasDataX = ALIASES.get(dimension);
-        dimensionAliasDataX.addAllDimensionType(dimensionAliasData.getDimensionTypes());
-        dimensionAliasDataX.addAllDimension(dimensionAliasData.getDimensions());
+        dimensionAliasDataX.addAllDimensionType(dimensionAlias.getDimensionTypes());
+        dimensionAliasDataX.addAllDimension(dimensionAlias.getDimensions());
     }
 
     public static boolean isAlias(
@@ -77,7 +83,7 @@ public class DimensionManager {
     ) {
         DimensionAliasData alias = ALIASES.get(dimensionB.location());
         if (alias != null) {
-            if (alias.containDimensionType(dimensionA.dimensionTypeId())) {
+            if (alias.containDimensionType(getType(dimensionA))) {
                 return true;
             }
 
@@ -85,5 +91,9 @@ public class DimensionManager {
         }
 
         return false;
+    }
+
+    public static ResourceKey<DimensionType> getType(Level dimension) {
+        return dimension.dimensionTypeRegistration().unwrapKey().orElse(DIRECT_DIMENSION_TYPE);
     }
 }

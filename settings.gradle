@@ -11,4 +11,4 @@ rootProject.name = 'dimensionfixer'
 
 include 'common'
 include 'fabric'
-include 'forge'
+include 'neoforge'

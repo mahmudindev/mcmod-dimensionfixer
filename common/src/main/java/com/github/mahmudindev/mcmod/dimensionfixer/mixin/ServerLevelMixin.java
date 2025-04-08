@@ -26,11 +26,10 @@ import java.util.function.Supplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
-    @Unique private DragonFight dragonFight;
+    @Unique
+    private DragonFight dragonFight;
 
-    @Shadow public abstract DimensionDataStorage getDataStorage();
-
-    protected ServerLevelMixin(
+    private ServerLevelMixin(
             WritableLevelData levelData,
             ResourceKey<Level> dimension,
             RegistryAccess registryAccess,
@@ -53,6 +52,8 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
                 maxChainedNeighborUpdates
         );
     }
+
+    @Shadow public abstract DimensionDataStorage getDataStorage();
 
     @ModifyExpressionValue(
             method = "<init>",
@@ -80,7 +81,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             ResourceKey<DimensionType> original
     ) {
         if (DimensionManager.isAlias(this, Level.END)) {
-            return this.dimensionTypeId();
+            return DimensionManager.getType(this);
         }
 
         return original;
@@ -99,8 +100,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
     ) {
         if (this.dimension() != Level.END) {
             this.dragonFight = this.getDataStorage().computeIfAbsent(
-                    DragonFight::load,
-                    DragonFight::new,
+                    DragonFight.factory(),
                     DragonFight.FIELD
             );
 
