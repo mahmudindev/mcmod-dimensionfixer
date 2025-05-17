@@ -20,9 +20,9 @@ public class DimensionManager {
         ALIASES.clear();
 
         Config config = Config.getConfig();
-        config.getAliases().forEach((dimension, dimensionAliasData) -> setAlias(
+        config.getAliases().forEach((dimension, alias) -> setAlias(
                 new ResourceLocation(dimension),
-                dimensionAliasData
+                alias
         ));
 
         Gson gson = new Gson();
@@ -41,7 +41,7 @@ public class DimensionManager {
 
             try {
                 String dimensionPath = resourcePath
-                        .substring(resourcePath.lastIndexOf("/") + 1)
+                        .substring(resourcePath.indexOf("/") + 1)
                         .replaceAll("\\.json$", "");
 
                 setAlias(resourceLocation.withPath(dimensionPath), gson.fromJson(
@@ -58,23 +58,17 @@ public class DimensionManager {
         return Map.copyOf(ALIASES);
     }
 
-    public static void setAlias(
-            ResourceLocation dimension,
-            DimensionAliasData dimensionAliasData
-    ) {
+    public static void setAlias(ResourceLocation dimension, DimensionAliasData alias) {
         if (!ALIASES.containsKey(dimension)) {
             ALIASES.put(dimension, new DimensionAliasData());
         }
 
-        DimensionAliasData dimensionAliasDataX = ALIASES.get(dimension);
-        dimensionAliasDataX.addAllDimensionType(dimensionAliasData.getDimensionTypes());
-        dimensionAliasDataX.addAllDimension(dimensionAliasData.getDimensions());
+        DimensionAliasData aliasX = ALIASES.get(dimension);
+        aliasX.addAllDimensionType(alias.getDimensionTypes());
+        aliasX.addAllDimension(alias.getDimensions());
     }
 
-    public static boolean isAlias(
-            Level dimensionA,
-            ResourceKey<Level> dimensionB
-    ) {
+    public static boolean isAlias(Level dimensionA, ResourceKey<Level> dimensionB) {
         DimensionAliasData alias = ALIASES.get(dimensionB.location());
         if (alias != null) {
             if (alias.containDimensionType(dimensionA.dimensionTypeId())) {

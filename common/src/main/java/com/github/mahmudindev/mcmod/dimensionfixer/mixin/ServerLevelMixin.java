@@ -30,7 +30,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
     @Shadow public abstract DimensionDataStorage getDataStorage();
 
-    protected ServerLevelMixin(
+    private ServerLevelMixin(
             WritableLevelData levelData,
             ResourceKey<Level> dimension,
             RegistryAccess registryAccess,

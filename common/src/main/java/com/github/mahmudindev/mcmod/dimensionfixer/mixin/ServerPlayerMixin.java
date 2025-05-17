@@ -22,7 +22,7 @@ import java.util.List;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
-    public ServerPlayerMixin(
+    private ServerPlayerMixin(
             Level level,
             BlockPos blockPos,
             float yRot,
