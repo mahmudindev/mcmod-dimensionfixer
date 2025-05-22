@@ -29,3 +29,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "dimensionfixer.mixins.json"
+
+["lithium:options"]
+"mixin.ai.poi.fast_portals" = false

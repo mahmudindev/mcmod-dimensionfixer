@@ -1,6 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 
-import com.github.mahmudindev.mcmod.dimensionfixer.world.DragonFight;
+import com.github.mahmudindev.mcmod.dimensionfixer.world.AliasDragonFight;
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -14,9 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
-import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraft.world.level.storage.WorldData;
-import net.minecraft.world.level.storage.WritableLevelData;
+import net.minecraft.world.level.storage.*;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,8 +26,9 @@ import java.util.function.Supplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
+    @Shadow @Final private ServerLevelData serverLevelData;
     @Unique
-    private DragonFight dragonFight;
+    private AliasDragonFight aliasDragonFight;
 
     private ServerLevelMixin(
             WritableLevelData levelData,
@@ -54,6 +55,114 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
     }
 
     @Shadow public abstract DimensionDataStorage getDataStorage();
+
+    @WrapOperation(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerLevel;setDayTime(J)V"
+            )
+    )
+    private void tickSetDayTimeSleeping(
+            ServerLevel instance,
+            long value,
+            Operation<Void> original
+    ) {
+        long dayTime = this.levelData.getDayTime();
+
+        original.call(instance, value);
+
+        if (this.serverLevelData instanceof DerivedLevelData) {
+            if (dayTime != this.levelData.getDayTime()) {
+                return;
+            }
+
+            boolean fixSleeping = false;
+
+            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+                DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
+                if (tweak != null) {
+                    Boolean fixSleepingX = tweak.getFixSleeping();
+                    if (fixSleepingX == null || fixSleepingX) {
+                        fixSleeping = true;
+                    }
+                } else {
+                    fixSleeping = true;
+                }
+            }
+
+            if (!fixSleeping) {
+                DimensionTweakData tweak = DimensionManager.getTweak(this.dimension());
+                if (tweak == null) {
+                    return;
+                }
+
+                Boolean fixSleepingX = tweak.getFixSleeping();
+                if (fixSleepingX == null || !fixSleepingX) {
+                    return;
+                }
+            }
+
+            DerivedLevelDataAccessor sld = (DerivedLevelDataAccessor) this.serverLevelData;
+            ServerLevelData serverLevelData = sld.getWrapped();
+            serverLevelData.setDayTime(value);
+        }
+    }
+
+    @WrapOperation(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerLevel;resetWeatherCycle()V"
+            )
+    )
+    private void tickResetWeatherCycleSleeping(
+            ServerLevel instance,
+            Operation<Void> original
+    ) {
+        boolean raining = this.levelData.isRaining();
+
+        original.call(instance);
+
+        if (this.serverLevelData instanceof DerivedLevelData) {
+            if (raining != this.levelData.isRaining()) {
+                return;
+            }
+
+            boolean fixSleeping = false;
+
+            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+                DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
+                if (tweak != null) {
+                    Boolean fixSleepingX = tweak.getFixSleeping();
+                    if (fixSleepingX == null || fixSleepingX) {
+                        fixSleeping = true;
+                    }
+                } else {
+                    fixSleeping = true;
+                }
+            }
+
+            if (!fixSleeping) {
+                DimensionTweakData tweak = DimensionManager.getTweak(this.dimension());
+                if (tweak == null) {
+                    return;
+                }
+
+                Boolean fixSleepingX = tweak.getFixSleeping();
+                if (fixSleepingX == null || !fixSleepingX) {
+                    return;
+                }
+            }
+
+            DerivedLevelDataAccessor sld = (DerivedLevelDataAccessor) this.serverLevelData;
+            ServerLevelData serverLevelData = sld.getWrapped();
+            serverLevelData.setRainTime(0);
+            serverLevelData.setRaining(false);
+            serverLevelData.setThunderTime(0);
+            serverLevelData.setThundering(false);
+        }
+    }
 
     @ModifyExpressionValue(
             method = "<init>",
@@ -99,12 +208,12 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             Operation<EndDragonFight.Data> original
     ) {
         if (this.dimension() != Level.END) {
-            this.dragonFight = this.getDataStorage().computeIfAbsent(
-                    DragonFight.factory(),
-                    DragonFight.FIELD
+            this.aliasDragonFight = this.getDataStorage().computeIfAbsent(
+                    AliasDragonFight.factory(),
+                    AliasDragonFight.FIELD
             );
 
-            return this.dragonFight.loadData();
+            return this.aliasDragonFight.loadData();
         }
 
         return original.call(instance);
@@ -123,7 +232,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             Operation<Void> original
     ) {
         if (this.dimension() != Level.END) {
-            this.dragonFight.saveData(data);
+            this.aliasDragonFight.saveData(data);
 
             return;
         }

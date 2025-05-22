@@ -36,5 +36,11 @@
         "customdimension:dimension_mirror"
       ]
     }
+  },
+  "tweaks": {
+    "customdimension:dimension": {
+      "fix_sleeping": true,
+      "fix_portal_search_radius": true
+    }
   }
 }
