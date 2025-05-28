@@ -7,8 +7,12 @@
     "MinecraftClientMixin"
   ],
   "mixins": [
+    "BlockPosMixin",
+    "DerivedLevelDataAccessor",
+    "EntityMixin",
     "LocationPredicateMixin",
     "MapItemSavedDataMixin",
+    "PortalForcerMixin",
     "ServerLevelMixin",
     "ServerPlayerMixin",
     "TheEndGatewayBlockEntityMixin"

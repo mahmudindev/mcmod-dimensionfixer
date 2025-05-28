@@ -3,6 +3,7 @@ package com.github.mahmudindev.mcmod.dimensionfixer.config;
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixerExpectPlatform;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionAliasData;
+import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.world.level.Level;
@@ -21,22 +22,34 @@ public class Config {
     private static Config CONFIG = new Config();
 
     private final Map<String, DimensionAliasData> aliases = new HashMap<>();
+    private final Map<String, DimensionTweakData> tweaks = new HashMap<>();
 
     private void defaults() {
         DimensionAliasData alias0 = new DimensionAliasData();
         alias0.addDimensionType(BuiltinDimensionTypes.OVERWORLD);
         alias0.addDimensionType(BuiltinDimensionTypes.OVERWORLD_CAVES);
         this.aliases.put(String.valueOf(Level.OVERWORLD.location()), alias0);
+
         DimensionAliasData alias1 = new DimensionAliasData();
         alias1.addDimensionType(BuiltinDimensionTypes.NETHER);
         this.aliases.put(String.valueOf(Level.NETHER.location()), alias1);
+
         DimensionAliasData alias2 = new DimensionAliasData();
         alias2.addDimensionType(BuiltinDimensionTypes.END);
         this.aliases.put(String.valueOf(Level.END.location()), alias2);
+
+        DimensionTweakData tweak0 = new DimensionTweakData();
+        tweak0.setFixSleeping(true);
+        tweak0.setFixPortalSearchRadius(true);
+        this.tweaks.put(DimensionFixer.MOD_ID + ":dimension", tweak0);
     }
 
     public Map<String, DimensionAliasData> getAliases() {
         return this.aliases;
+    }
+
+    public Map<String, DimensionTweakData> getTweaks() {
+        return this.tweaks;
     }
 
     public static void load() {

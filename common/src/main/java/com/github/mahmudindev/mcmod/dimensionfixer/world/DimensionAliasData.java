@@ -12,7 +12,6 @@ import java.util.List;
 public class DimensionAliasData {
     @SerializedName("dimension_types")
     private final List<String> dimensionTypes = new LinkedList<>();
-    @SerializedName("dimensions")
     private final List<String> dimensions = new LinkedList<>();
 
     public List<String> getDimensionTypes() {
