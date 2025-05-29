@@ -38,10 +38,10 @@ public class DimensionManager {
         ));
 
         Gson gson = new Gson();
-        manager.listResources(
+        manager.listResourceStacks(
                 DimensionFixer.MOD_ID,
                 resourceLocation -> resourceLocation.getPath().endsWith(".json")
-        ).forEach((resourceLocation, resource) -> {
+        ).forEach((resourceLocation, resources) -> resources.forEach(resource -> {
             String resourcePath = resourceLocation.getPath().replaceFirst(
                     "^%s/".formatted(DimensionFixer.MOD_ID),
                     ""
@@ -66,7 +66,7 @@ public class DimensionManager {
             } catch (IOException e) {
                 DimensionFixer.LOGGER.error("Failed to read datapack", e);
             }
-        });
+        }));
     }
 
     public static Map<ResourceLocation, DimensionAliasData> getAliases() {
