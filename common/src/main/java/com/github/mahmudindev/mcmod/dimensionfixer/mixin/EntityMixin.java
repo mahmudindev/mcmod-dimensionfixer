@@ -3,12 +3,10 @@ package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 import com.github.mahmudindev.mcmod.dimensionfixer.base.IBlockPos;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -23,25 +21,6 @@ import java.util.Optional;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
     @Shadow public abstract Level level();
-
-    @ModifyExpressionValue(
-            method = "findDimensionEntryPoint",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;",
-                    ordinal = 0
-            )
-    )
-    private ResourceKey<Level> findDimensionEntryPointNetherKey0(
-            ResourceKey<Level> original,
-            ServerLevel serverLevel
-    ) {
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
-            return serverLevel.dimension();
-        }
-
-        return original;
-    }
 
     @WrapOperation(
             method = "getExitPortal",

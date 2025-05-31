@@ -9,6 +9,7 @@
   "mixins": [
     "BlockPosMixin",
     "DerivedLevelDataAccessor",
+    "EntityHMixin",
     "EntityMixin",
     "LocationPredicateMixin",
     "MapItemSavedDataMixin",
