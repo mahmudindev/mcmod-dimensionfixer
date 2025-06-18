@@ -23,7 +23,7 @@ public abstract class EntityHMixin {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 

@@ -81,7 +81,7 @@ public class DimensionManager {
         aliasX.addAllDimension(alias.getDimensions());
     }
 
-    public static boolean isAlias(Level dimensionA, ResourceKey<Level> dimensionB) {
+    public static boolean isAliasDimension(Level dimensionA, ResourceKey<Level> dimensionB) {
         DimensionAliasData alias = getAlias(dimensionB.location());
         if (alias != null) {
             if (alias.containDimensionType(dimensionA.dimensionTypeId())) {

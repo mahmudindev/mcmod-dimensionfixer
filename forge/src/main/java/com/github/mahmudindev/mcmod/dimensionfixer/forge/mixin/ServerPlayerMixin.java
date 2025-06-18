@@ -76,10 +76,10 @@ public abstract class ServerPlayerMixin extends Player {
             Operation<Void> original
     ) {
         if (this.previousEnteredNetherPosition != null) {
-            if (DimensionManager.isAlias(
+            if (DimensionManager.isAliasDimension(
                     this.serverLevel(),
                     Level.OVERWORLD
-            ) && DimensionManager.isAlias(
+            ) && DimensionManager.isAliasDimension(
                     serverLevel,
                     Level.NETHER
             )) {

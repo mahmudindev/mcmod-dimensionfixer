@@ -8,11 +8,14 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.storage.*;
@@ -56,6 +59,28 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
     @Shadow public abstract DimensionDataStorage getDataStorage();
 
+    @WrapOperation(
+            method = "<init>",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/raid/Raids;getFileId(Lnet/minecraft/core/Holder;)Ljava/lang/String;"
+            )
+    )
+    private String initRaidsGetFieldId(
+            Holder<DimensionType> holder,
+            Operation<String> original
+    ) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
+            return original.call(VanillaRegistries
+                    .createLookup()
+                    .lookupOrThrow(Registries.DIMENSION_TYPE)
+                    .getOrThrow(BuiltinDimensionTypes.END)
+            );
+        }
+
+        return original.call(holder);
+    }
+
     @ModifyExpressionValue(
             method = "<init>",
             at = @At(
@@ -64,7 +89,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             )
     )
     private ResourceKey<Level> initDragonFightEndKey(ResourceKey<Level> original) {
-        if (DimensionManager.isAlias(this, Level.END)) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
             return this.dimension();
         }
 
@@ -81,7 +106,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
     private ResourceKey<DimensionType> initDragonFightEndTypeKey(
             ResourceKey<DimensionType> original
     ) {
-        if (DimensionManager.isAlias(this, Level.END)) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
             return this.dimensionTypeId();
         }
 
@@ -135,7 +160,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
             boolean fixSleeping = false;
 
-            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+            if (DimensionManager.isAliasDimension(this, Level.OVERWORLD)) {
                 DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
                 if (tweak != null) {
                     Boolean fixSleepingX = tweak.getFixSleeping();
@@ -187,7 +212,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
             boolean fixSleeping = false;
 
-            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+            if (DimensionManager.isAliasDimension(this, Level.OVERWORLD)) {
                 DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
                 if (tweak != null) {
                     Boolean fixSleepingX = tweak.getFixSleeping();

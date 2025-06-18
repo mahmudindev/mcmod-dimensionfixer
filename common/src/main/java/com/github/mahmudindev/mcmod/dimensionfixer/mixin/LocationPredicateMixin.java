@@ -27,7 +27,7 @@ public abstract class LocationPredicateMixin {
             ServerLevel instance,
             Operation<ResourceKey<Level>> original
     ) {
-        if (DimensionManager.isAlias(instance, this.dimension)) {
+        if (DimensionManager.isAliasDimension(instance, this.dimension)) {
             return this.dimension;
         }
 

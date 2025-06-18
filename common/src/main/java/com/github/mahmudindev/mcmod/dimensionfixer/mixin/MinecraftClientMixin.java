@@ -26,7 +26,7 @@ public abstract class MinecraftClientMixin {
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();
-        if (DimensionManager.isAlias(level, Level.END)) {
+        if (DimensionManager.isAliasDimension(level, Level.END)) {
             return level.dimension();
         }
 
@@ -44,7 +44,7 @@ public abstract class MinecraftClientMixin {
             ResourceKey<Level> original
     ) {
         Level level = this.player.level();
-        if (DimensionManager.isAlias(level, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(level, Level.NETHER)) {
             return level.dimension();
         }
 
