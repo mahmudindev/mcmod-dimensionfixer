@@ -46,7 +46,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         ServerLevel serverLevel = this.serverLevel();
-        if (DimensionManager.isAlias(serverLevel, Level.OVERWORLD)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.OVERWORLD)) {
             return serverLevel.dimension();
         }
 
@@ -65,7 +65,7 @@ public abstract class ServerPlayerMixin extends Player {
             DimensionTransition dimensionTransition
     ) {
         ServerLevel serverLevel = dimensionTransition.newLevel();
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 
@@ -125,7 +125,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 
@@ -143,7 +143,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (DimensionManager.isAlias(level, Level.OVERWORLD)) {
+        if (DimensionManager.isAliasDimension(level, Level.OVERWORLD)) {
             return level.dimension();
         }
 
@@ -162,7 +162,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (DimensionManager.isAlias(level, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(level, Level.NETHER)) {
             return level.dimension();
         }
 

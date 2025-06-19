@@ -36,7 +36,7 @@ public abstract class MapItemSavedDataMixin {
             if (minecraftServer != null) {
                 ServerLevel serverLevel = minecraftServer.getLevel(this.dimension);
                 if (serverLevel != null) {
-                    if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+                    if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
                         return this.dimension;
                     }
                 }

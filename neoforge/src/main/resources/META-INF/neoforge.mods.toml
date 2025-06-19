@@ -9,14 +9,14 @@ version = "${version}"
 displayName = "Dimension Fixer"
 authors = "mahmudindev"
 description = '''
-Fix hardcoded behavior of dimension mainly for mirror dimension.
+Fix hardcoded behavior of dimension mainly for custom dimension.
 '''
 logoFile = "assets/dimensionfixer/icon.png"
 
 [[dependencies.dimensionfixer]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "[21.0,)"
 ordering = "NONE"
 side = "BOTH"
 
