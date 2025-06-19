@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,7 +36,7 @@ public abstract class ServerPlayerMixin extends Player {
     @Shadow public abstract ServerLevel serverLevel();
 
     @ModifyExpressionValue(
-            method = "changeDimension",
+            method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/world/level/Level;OVERWORLD:Lnet/minecraft/resources/ResourceKey;"
@@ -46,7 +46,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         ServerLevel serverLevel = this.serverLevel();
-        if (DimensionManager.isAlias(serverLevel, Level.OVERWORLD)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.OVERWORLD)) {
             return serverLevel.dimension();
         }
 
@@ -54,7 +54,7 @@ public abstract class ServerPlayerMixin extends Player {
     }
 
     @ModifyExpressionValue(
-            method = "changeDimension",
+            method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
@@ -62,10 +62,10 @@ public abstract class ServerPlayerMixin extends Player {
     )
     private ResourceKey<Level> changeDimensionNetherTrigger1(
             ResourceKey<Level> original,
-            DimensionTransition dimensionTransition
+            TeleportTransition teleportTransition
     ) {
-        ServerLevel serverLevel = dimensionTransition.newLevel();
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        ServerLevel serverLevel = teleportTransition.newLevel();
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 
@@ -125,7 +125,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 
@@ -143,7 +143,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (DimensionManager.isAlias(level, Level.OVERWORLD)) {
+        if (DimensionManager.isAliasDimension(level, Level.OVERWORLD)) {
             return level.dimension();
         }
 
@@ -162,7 +162,7 @@ public abstract class ServerPlayerMixin extends Player {
             ResourceKey<Level> original
     ) {
         Level level = this.level();
-        if (DimensionManager.isAlias(level, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(level, Level.NETHER)) {
             return level.dimension();
         }
 

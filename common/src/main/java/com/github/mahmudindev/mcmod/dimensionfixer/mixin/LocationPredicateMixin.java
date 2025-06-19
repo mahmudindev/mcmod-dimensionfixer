@@ -30,7 +30,7 @@ public abstract class LocationPredicateMixin {
             Operation<ResourceKey<Level>> original
     ) {
         ResourceKey<Level> resourceKey = this.dimension.get();
-        if (DimensionManager.isAlias(instance, resourceKey)) {
+        if (DimensionManager.isAliasDimension(instance, resourceKey)) {
             return resourceKey;
         }
 
