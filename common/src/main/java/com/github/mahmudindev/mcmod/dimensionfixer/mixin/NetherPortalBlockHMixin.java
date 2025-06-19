@@ -24,7 +24,7 @@ public class NetherPortalBlockHMixin {
             ResourceKey<Level> original,
             @Local(ordinal = 1) ServerLevel serverLevel
     ) {
-        if (DimensionManager.isAlias(serverLevel, Level.NETHER)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
 

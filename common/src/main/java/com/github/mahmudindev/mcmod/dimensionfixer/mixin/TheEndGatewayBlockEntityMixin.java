@@ -22,7 +22,7 @@ public abstract class TheEndGatewayBlockEntityMixin {
             ResourceKey<Level> original,
             ServerLevel serverLevel
     ) {
-        if (DimensionManager.isAlias(serverLevel, Level.END)) {
+        if (DimensionManager.isAliasDimension(serverLevel, Level.END)) {
             return serverLevel.dimension();
         }
 

@@ -8,21 +8,23 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.raid.Raids;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-
-import java.util.function.Supplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
@@ -35,7 +37,6 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             ResourceKey<Level> dimension,
             RegistryAccess registryAccess,
             Holder<DimensionType> dimensionTypeRegistration,
-            Supplier<ProfilerFiller> profiler,
             boolean isClientSide,
             boolean isDebug,
             long biomeZoomSeed,
@@ -46,7 +47,6 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
                 dimension,
                 registryAccess,
                 dimensionTypeRegistration,
-                profiler,
                 isClientSide,
                 isDebug,
                 biomeZoomSeed,
@@ -55,6 +55,81 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
     }
 
     @Shadow public abstract DimensionDataStorage getDataStorage();
+
+    @WrapOperation(
+            method = "<init>",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/raid/Raids;getType(Lnet/minecraft/core/Holder;)Lnet/minecraft/world/level/saveddata/SavedDataType;"
+            )
+    )
+    private SavedDataType<Raids> initRaidsGetType(
+            Holder<DimensionType> holder,
+            Operation<SavedDataType<Raids>> original
+    ) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
+            return original.call(VanillaRegistries
+                    .createLookup()
+                    .lookupOrThrow(Registries.DIMENSION_TYPE)
+                    .getOrThrow(BuiltinDimensionTypes.END)
+            );
+        }
+
+        return original.call(holder);
+    }
+
+    @ModifyExpressionValue(
+            method = "<init>",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/level/Level;END:Lnet/minecraft/resources/ResourceKey;"
+            )
+    )
+    private ResourceKey<Level> initDragonFightEndKey(ResourceKey<Level> original) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
+            return this.dimension();
+        }
+
+        return original;
+    }
+
+    @ModifyExpressionValue(
+            method = "<init>",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/world/level/dimension/BuiltinDimensionTypes;END:Lnet/minecraft/resources/ResourceKey;"
+            )
+    )
+    private ResourceKey<DimensionType> initDragonFightEndTypeKey(
+            ResourceKey<DimensionType> original
+    ) {
+        if (DimensionManager.isAliasDimension(this, Level.END)) {
+            return DimensionManager.getType(this);
+        }
+
+        return original;
+    }
+
+    @WrapOperation(
+            method = "<init>",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/level/storage/WorldData;endDragonFightData()Lnet/minecraft/world/level/dimension/end/EndDragonFight$Data;"
+            )
+    )
+    private EndDragonFight.Data initDragonFightDataLoad(
+            WorldData instance,
+            Operation<EndDragonFight.Data> original
+    ) {
+        if (this.dimension() != Level.END) {
+            DimensionDataStorage dataStorage = this.getDataStorage();
+            this.aliasDragonFight = dataStorage.computeIfAbsent(AliasDragonFight.TYPE);
+
+            return this.aliasDragonFight.loadData();
+        }
+
+        return original.call(instance);
+    }
 
     @WrapOperation(
             method = "tick",
@@ -79,7 +154,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
             boolean fixSleeping = false;
 
-            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+            if (DimensionManager.isAliasDimension(this, Level.OVERWORLD)) {
                 DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
                 if (tweak != null) {
                     Boolean fixSleepingX = tweak.getFixSleeping();
@@ -131,7 +206,7 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
 
             boolean fixSleeping = false;
 
-            if (DimensionManager.isAlias(this, Level.OVERWORLD)) {
+            if (DimensionManager.isAliasDimension(this, Level.OVERWORLD)) {
                 DimensionTweakData tweak = DimensionManager.getTweak(Level.OVERWORLD);
                 if (tweak != null) {
                     Boolean fixSleepingX = tweak.getFixSleeping();
@@ -162,61 +237,6 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             serverLevelData.setThunderTime(0);
             serverLevelData.setThundering(false);
         }
-    }
-
-    @ModifyExpressionValue(
-            method = "<init>",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/level/Level;END:Lnet/minecraft/resources/ResourceKey;"
-            )
-    )
-    private ResourceKey<Level> initDragonFightEndKey(ResourceKey<Level> original) {
-        if (DimensionManager.isAlias(this, Level.END)) {
-            return this.dimension();
-        }
-
-        return original;
-    }
-
-    @ModifyExpressionValue(
-            method = "<init>",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/level/dimension/BuiltinDimensionTypes;END:Lnet/minecraft/resources/ResourceKey;"
-            )
-    )
-    private ResourceKey<DimensionType> initDragonFightEndTypeKey(
-            ResourceKey<DimensionType> original
-    ) {
-        if (DimensionManager.isAlias(this, Level.END)) {
-            return DimensionManager.getType(this);
-        }
-
-        return original;
-    }
-
-    @WrapOperation(
-            method = "<init>",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/storage/WorldData;endDragonFightData()Lnet/minecraft/world/level/dimension/end/EndDragonFight$Data;"
-            )
-    )
-    private EndDragonFight.Data initDragonFightDataLoad(
-            WorldData instance,
-            Operation<EndDragonFight.Data> original
-    ) {
-        if (this.dimension() != Level.END) {
-            this.aliasDragonFight = this.getDataStorage().computeIfAbsent(
-                    AliasDragonFight.factory(),
-                    AliasDragonFight.FIELD
-            );
-
-            return this.aliasDragonFight.loadData();
-        }
-
-        return original.call(instance);
     }
 
     @WrapOperation(
