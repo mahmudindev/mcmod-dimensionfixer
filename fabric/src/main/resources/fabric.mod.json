@@ -3,7 +3,7 @@
   "id": "dimensionfixer",
   "version": "${version}",
   "name": "Dimension Fixer",
-  "description": "Fix hardcoded behavior of dimension mainly for mirror dimension.",
+  "description": "Fix hardcoded behavior of dimension mainly for custom dimension.",
   "authors": [
     "mahmudindev"
   ],
@@ -26,8 +26,8 @@
     "dimensionfixer.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.12",
-    "minecraft": ">=1.21",
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.21.2",
     "java": ">=21",
     "fabric-api": "*"
   },

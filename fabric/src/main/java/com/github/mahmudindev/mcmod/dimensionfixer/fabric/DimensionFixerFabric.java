@@ -1,8 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.fabric;
 
-import net.fabricmc.api.ModInitializer;
-
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
