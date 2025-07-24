@@ -4,6 +4,7 @@ import com.github.mahmudindev.mcmod.dimensionfixer.world.AliasDragonFight;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.Holder;
@@ -264,5 +265,18 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
         }
 
         original.call(instance, data);
+    }
+
+    @WrapMethod(method = "isFlat")
+    public boolean isFlatOverride(Operation<Boolean> original) {
+        DimensionTweakData tweak = DimensionManager.getTweak(this.dimension());
+        if (tweak != null) {
+            Boolean overrideFlatCheck = tweak.getOverrideFlatCheck();
+            if (overrideFlatCheck != null) {
+                return overrideFlatCheck;
+            }
+        }
+
+        return original.call();
     }
 }
