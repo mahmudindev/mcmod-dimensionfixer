@@ -41,6 +41,7 @@ public class Config {
         DimensionTweakData tweak0 = new DimensionTweakData();
         tweak0.setFixSleeping(true);
         tweak0.setFixPortalSearchRadius(true);
+        tweak0.setOverrideFlatCheck(true);
         this.tweaks.put(DimensionFixer.MOD_ID + ":dimension", tweak0);
     }
 
