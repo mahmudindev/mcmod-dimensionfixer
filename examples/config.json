@@ -40,7 +40,8 @@
   "tweaks": {
     "customdimension:dimension": {
       "fix_sleeping": true,
-      "fix_portal_search_radius": true
+      "fix_portal_search_radius": true,
+      "override_flat_check": true
     }
   }
 }
