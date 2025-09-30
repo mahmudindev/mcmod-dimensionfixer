@@ -16,14 +16,14 @@ logoFile = "assets/dimensionfixer/icon.png"
 [[dependencies.dimensionfixer]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.5,)"
+versionRange = "[21.9,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.dimensionfixer]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.5,)"
+versionRange = "[1.21.9,)"
 ordering = "NONE"
 side = "BOTH"
 
