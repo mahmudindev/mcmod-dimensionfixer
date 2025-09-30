@@ -4,7 +4,6 @@ import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -24,16 +23,11 @@ import java.util.List;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
-    private ServerPlayerMixin(
-            Level level,
-            BlockPos blockPos,
-            float yRot,
-            GameProfile gameProfile
-    ) {
-        super(level, blockPos, yRot, gameProfile);
+    private ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
-    @Shadow public abstract ServerLevel serverLevel();
+    @Shadow public abstract ServerLevel level();
 
     @ModifyExpressionValue(
             method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
@@ -45,7 +39,7 @@ public abstract class ServerPlayerMixin extends Player {
     private ResourceKey<Level> changeDimensionNetherTrigger0(
             ResourceKey<Level> original
     ) {
-        ServerLevel serverLevel = this.serverLevel();
+        ServerLevel serverLevel = this.level();
         if (DimensionManager.isAliasDimension(serverLevel, Level.OVERWORLD)) {
             return serverLevel.dimension();
         }
