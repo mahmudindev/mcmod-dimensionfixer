@@ -10,7 +10,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -72,11 +71,9 @@ public abstract class ServerLevelMixin extends Level implements WorldGenLevel {
             Operation<String> original
     ) {
         if (DimensionManager.isAliasDimension(this, Level.END)) {
-            return original.call(VanillaRegistries
-                    .createLookup()
-                    .lookupOrThrow(Registries.DIMENSION_TYPE)
-                    .getOrThrow(BuiltinDimensionTypes.END)
-            );
+            return original.call(this.registryAccess()
+                    .registryOrThrow(Registries.DIMENSION_TYPE)
+                    .getHolderOrThrow(BuiltinDimensionTypes.END));
         }
 
         return original.call(holder);
