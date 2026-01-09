@@ -3,7 +3,7 @@ package com.github.mahmudindev.mcmod.dimensionfixer.fabric;
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -20,7 +20,7 @@ public final class DimensionFixerFabric implements ModInitializer {
 
         ResourceLoader
                 .get(PackType.SERVER_DATA)
-                .registerReloader(ResourceLocation.fromNamespaceAndPath(
+                .registerReloader(Identifier.fromNamespaceAndPath(
                         DimensionFixer.MOD_ID,
                         "default"
                 ), new ResourceManagerReloadListener() {

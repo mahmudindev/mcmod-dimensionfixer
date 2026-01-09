@@ -1,7 +1,7 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.neoforge;
 
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.common.Mod;
@@ -16,7 +16,7 @@ public final class DimensionFixerNeoForge {
 
         NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent event) -> {
             event.addListener(
-                    ResourceLocation.fromNamespaceAndPath(
+                    Identifier.fromNamespaceAndPath(
                             DimensionFixer.MOD_ID,
                             "default"
                     ),

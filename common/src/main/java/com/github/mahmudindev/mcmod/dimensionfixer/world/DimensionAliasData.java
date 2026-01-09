@@ -2,7 +2,7 @@ package com.github.mahmudindev.mcmod.dimensionfixer.world;
 
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 
@@ -22,12 +22,12 @@ public class DimensionAliasData {
         return this.dimensionTypes.contains(dimension);
     }
 
-    public boolean containDimensionType(ResourceLocation dimension) {
+    public boolean containDimensionType(Identifier dimension) {
         return this.containDimensionType(String.valueOf(dimension));
     }
 
     public boolean containDimensionType(ResourceKey<DimensionType> dimension) {
-        return this.containDimensionType(dimension.location());
+        return this.containDimensionType(dimension.identifier());
     }
 
     public void addDimensionType(String dimensionType) {
@@ -38,12 +38,12 @@ public class DimensionAliasData {
         this.dimensionTypes.add(dimensionType);
     }
 
-    public void addDimensionType(ResourceLocation dimensionType) {
+    public void addDimensionType(Identifier dimensionType) {
         this.addDimensionType(String.valueOf(dimensionType));
     }
 
     public void addDimensionType(ResourceKey<DimensionType> dimensionType) {
-        this.addDimensionType(dimensionType.location());
+        this.addDimensionType(dimensionType.identifier());
     }
 
     public void addAllDimensionType(List<String> dimensionTypes) {
@@ -58,12 +58,12 @@ public class DimensionAliasData {
         return this.dimensions.contains(dimension);
     }
 
-    public boolean containDimension(ResourceLocation dimension) {
+    public boolean containDimension(Identifier dimension) {
         return this.containDimension(String.valueOf(dimension));
     }
 
     public boolean containDimension(ResourceKey<Level> dimension) {
-        return this.containDimension(dimension.location());
+        return this.containDimension(dimension.identifier());
     }
 
     public void addDimension(String dimension) {
@@ -74,12 +74,12 @@ public class DimensionAliasData {
         this.dimensions.add(dimension);
     }
 
-    public void addDimension(ResourceLocation dimension) {
+    public void addDimension(Identifier dimension) {
         this.addDimension(String.valueOf(dimension));
     }
 
     public void addDimension(ResourceKey<Level> dimension) {
-        this.addDimension(dimension.location());
+        this.addDimension(dimension.identifier());
     }
 
     public void addAllDimension(List<String> dimensions) {

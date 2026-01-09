@@ -32,22 +32,4 @@ public abstract class MinecraftClientMixin {
 
         return original;
     }
-
-    @ModifyExpressionValue(
-            method = "getSituationalMusic",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
-            )
-    )
-    private ResourceKey<Level> getSituationalMusicNetherKey(
-            ResourceKey<Level> original
-    ) {
-        Level level = this.player.level();
-        if (DimensionManager.isAliasDimension(level, Level.NETHER)) {
-            return level.dimension();
-        }
-
-        return original;
-    }
 }

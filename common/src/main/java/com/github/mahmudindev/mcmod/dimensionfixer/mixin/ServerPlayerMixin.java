@@ -70,7 +70,7 @@ public abstract class ServerPlayerMixin extends Player {
             method = "triggerDimensionChangeTriggers",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/advancements/critereon/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"
+                    target = "Lnet/minecraft/advancements/criterion/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"
             )
     )
     private void triggerDimensionChangeTriggersTrigger(

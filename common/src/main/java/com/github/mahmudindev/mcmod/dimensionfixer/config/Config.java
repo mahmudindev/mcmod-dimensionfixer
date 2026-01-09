@@ -28,15 +28,15 @@ public class Config {
         DimensionAliasData alias0 = new DimensionAliasData();
         alias0.addDimensionType(BuiltinDimensionTypes.OVERWORLD);
         alias0.addDimensionType(BuiltinDimensionTypes.OVERWORLD_CAVES);
-        this.aliases.put(String.valueOf(Level.OVERWORLD.location()), alias0);
+        this.aliases.put(String.valueOf(Level.OVERWORLD.identifier()), alias0);
 
         DimensionAliasData alias1 = new DimensionAliasData();
         alias1.addDimensionType(BuiltinDimensionTypes.NETHER);
-        this.aliases.put(String.valueOf(Level.NETHER.location()), alias1);
+        this.aliases.put(String.valueOf(Level.NETHER.identifier()), alias1);
 
         DimensionAliasData alias2 = new DimensionAliasData();
         alias2.addDimensionType(BuiltinDimensionTypes.END);
-        this.aliases.put(String.valueOf(Level.END.location()), alias2);
+        this.aliases.put(String.valueOf(Level.END.identifier()), alias2);
 
         DimensionTweakData tweak0 = new DimensionTweakData();
         tweak0.setFixSleeping(true);
