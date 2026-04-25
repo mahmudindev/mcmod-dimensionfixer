@@ -24,12 +24,9 @@ public abstract class MapItemSavedDataMixin {
                     target = "Lnet/minecraft/world/level/Level;NETHER:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> calculateRotationNetherKey(
-            ResourceKey<Level> original,
-            LevelAccessor levelAccessor
-    ) {
-        if (levelAccessor != null) {
-            MinecraftServer minecraftServer = levelAccessor.getServer();
+    private ResourceKey<Level> calculateRotationNetherKey(ResourceKey<Level> original, LevelAccessor level) {
+        if (level != null) {
+            MinecraftServer minecraftServer = level.getServer();
             if (minecraftServer != null) {
                 ServerLevel serverLevel = minecraftServer.getLevel(this.dimension);
                 if (serverLevel != null) {

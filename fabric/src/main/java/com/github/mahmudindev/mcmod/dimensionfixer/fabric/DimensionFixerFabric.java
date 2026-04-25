@@ -20,7 +20,7 @@ public final class DimensionFixerFabric implements ModInitializer {
 
         ResourceLoader
                 .get(PackType.SERVER_DATA)
-                .registerReloader(Identifier.fromNamespaceAndPath(
+                .registerReloadListener(Identifier.fromNamespaceAndPath(
                         DimensionFixer.MOD_ID,
                         "default"
                 ), new ResourceManagerReloadListener() {

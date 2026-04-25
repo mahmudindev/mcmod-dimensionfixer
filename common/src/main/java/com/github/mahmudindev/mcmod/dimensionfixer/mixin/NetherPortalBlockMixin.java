@@ -25,20 +25,20 @@ public abstract class NetherPortalBlockMixin {
                     target = "Lnet/minecraft/world/level/portal/PortalForcer;findClosestPortalPosition(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/level/border/WorldBorder;)Ljava/util/Optional;"
             )
     )
-    private Optional<BlockPos> getExitPortalfindClosestPortalPositionPrepare(
+    private Optional<BlockPos> getExitPortalFindClosestPortalPositionPrepare(
             PortalForcer instance,
-            BlockPos blockPos,
-            boolean isNether,
+            BlockPos approximateExitPos,
+            boolean toNether,
             WorldBorder worldBorder,
             Operation<Optional<BlockPos>> original,
-            ServerLevel serverLevel,
+            ServerLevel newLevel,
             Entity entity
     ) {
-        DimensionTweakData tweak = DimensionManager.getTweak(serverLevel.dimension());
+        DimensionTweakData tweak = DimensionManager.getTweak(newLevel.dimension());
         if (tweak != null) {
-            ((IBlockPos) blockPos).dimensionfixer$setLevel(entity.level());
+            ((IBlockPos) approximateExitPos).dimensionfixer$setLevel(entity.level());
         }
 
-        return original.call(instance, blockPos, isNether, worldBorder);
+        return original.call(instance, approximateExitPos, toNether, worldBorder);
     }
 }

@@ -1,7 +1,6 @@
 package com.github.mahmudindev.mcmod.dimensionfixer.config;
 
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
-import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixerExpectPlatform;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionAliasData;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
 import com.google.gson.Gson;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config {
-    private static final Path CONFIG_DIR = DimensionFixerExpectPlatform.getConfigDir();
+    private static final Path CONFIG_DIR = DimensionFixer.PLATFORM.getConfigDirectory();
     private static Config CONFIG = new Config();
 
     private final Map<String, DimensionAliasData> aliases = new HashMap<>();
@@ -39,7 +38,6 @@ public class Config {
         this.aliases.put(String.valueOf(Level.END.identifier()), alias2);
 
         DimensionTweakData tweak0 = new DimensionTweakData();
-        tweak0.setFixSleeping(true);
         tweak0.setFixPortalSearchRadius(true);
         tweak0.setOverrideFlatCheck(true);
         this.tweaks.put(DimensionFixer.MOD_ID + ":dimension", tweak0);

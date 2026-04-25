@@ -20,10 +20,10 @@ public abstract class TheEndGatewayBlockEntityMixin {
     )
     private ResourceKey<Level> getPortalPositionEndKey(
             ResourceKey<Level> original,
-            ServerLevel serverLevel
+            ServerLevel currentLevel
     ) {
-        if (DimensionManager.isAliasDimension(serverLevel, Level.END)) {
-            return serverLevel.dimension();
+        if (DimensionManager.isAliasDimension(currentLevel, Level.END)) {
+            return currentLevel.dimension();
         }
 
         return original;

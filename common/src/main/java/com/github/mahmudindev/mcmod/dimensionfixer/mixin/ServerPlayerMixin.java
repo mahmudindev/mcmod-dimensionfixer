@@ -36,9 +36,7 @@ public abstract class ServerPlayerMixin extends Player {
                     target = "Lnet/minecraft/world/level/Level;OVERWORLD:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> changeDimensionNetherTrigger0(
-            ResourceKey<Level> original
-    ) {
+    private ResourceKey<Level> changeDimensionNetherTrigger0(ResourceKey<Level> original) {
         ServerLevel serverLevel = this.level();
         if (DimensionManager.isAliasDimension(serverLevel, Level.OVERWORLD)) {
             return serverLevel.dimension();
@@ -56,9 +54,9 @@ public abstract class ServerPlayerMixin extends Player {
     )
     private ResourceKey<Level> changeDimensionNetherTrigger1(
             ResourceKey<Level> original,
-            TeleportTransition teleportTransition
+            TeleportTransition transition
     ) {
-        ServerLevel serverLevel = teleportTransition.newLevel();
+        ServerLevel serverLevel = transition.newLevel();
         if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
             return serverLevel.dimension();
         }
@@ -73,16 +71,13 @@ public abstract class ServerPlayerMixin extends Player {
                     target = "Lnet/minecraft/advancements/criterion/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"
             )
     )
-    private void triggerDimensionChangeTriggersTrigger(
-            ServerLevel serverLevel,
-            CallbackInfo ci
-    ) {
-        ResourceKey<Level> dimensionA0 = serverLevel.dimension();
+    private void triggerDimensionChangeTriggersTrigger(ServerLevel oldLevel, CallbackInfo ci) {
+        ResourceKey<Level> dimensionA0 = oldLevel.dimension();
         List<ResourceKey<Level>> dimensionA1List = new LinkedList<>();
         ResourceKey<Level> dimensionB0 = this.level().dimension();
         List<ResourceKey<Level>> dimensionB1List = new LinkedList<>();
 
-        ResourceKey<DimensionType> dimensionTypeA0 = DimensionManager.getType(serverLevel);
+        ResourceKey<DimensionType> dimensionTypeA0 = DimensionManager.getType(oldLevel);
         ResourceKey<DimensionType> dimensionTypeB0 = DimensionManager.getType(this.level());
         DimensionManager.getAliases().forEach((k, v) -> {
             if (v.containDimension(dimensionA0) || v.containDimensionType(dimensionTypeA0)) {
@@ -94,17 +89,19 @@ public abstract class ServerPlayerMixin extends Player {
             }
         });
 
-        dimensionA1List.forEach(dimensionA -> dimensionB1List.forEach(dimensionB -> {
-            if (dimensionA == dimensionA0 && dimensionB == dimensionB0) {
-                return;
-            }
+        dimensionA1List.forEach(dimensionA -> {
+            dimensionB1List.forEach(dimensionB -> {
+                if (dimensionA == dimensionA0 && dimensionB == dimensionB0) {
+                    return;
+                }
 
-            CriteriaTriggers.CHANGED_DIMENSION.trigger(
-                    (ServerPlayer) (Object) this,
-                    dimensionA,
-                    dimensionB
-            );
-        }));
+                CriteriaTriggers.CHANGED_DIMENSION.trigger(
+                        (ServerPlayer) (Object) this,
+                        dimensionA,
+                        dimensionB
+                );
+            });
+        });
     }
 
     @ModifyExpressionValue(
@@ -117,10 +114,10 @@ public abstract class ServerPlayerMixin extends Player {
     )
     private ResourceKey<Level> triggerDimensionChangeTriggersNetherKey0(
             ResourceKey<Level> original,
-            ServerLevel serverLevel
+            ServerLevel oldLevel
     ) {
-        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
-            return serverLevel.dimension();
+        if (DimensionManager.isAliasDimension(oldLevel, Level.NETHER)) {
+            return oldLevel.dimension();
         }
 
         return original;
@@ -133,9 +130,7 @@ public abstract class ServerPlayerMixin extends Player {
                     target = "Lnet/minecraft/world/level/Level;OVERWORLD:Lnet/minecraft/resources/ResourceKey;"
             )
     )
-    private ResourceKey<Level> triggerDimensionChangeTriggersOverworldKey(
-            ResourceKey<Level> original
-    ) {
+    private ResourceKey<Level> triggerDimensionChangeTriggersOverworldKey(ResourceKey<Level> original) {
         Level level = this.level();
         if (DimensionManager.isAliasDimension(level, Level.OVERWORLD)) {
             return level.dimension();
@@ -152,9 +147,7 @@ public abstract class ServerPlayerMixin extends Player {
                     ordinal = 1
             )
     )
-    private ResourceKey<Level> triggerDimensionChangeTriggersNetherKey1(
-            ResourceKey<Level> original
-    ) {
+    private ResourceKey<Level> triggerDimensionChangeTriggersNetherKey1(ResourceKey<Level> original) {
         Level level = this.level();
         if (DimensionManager.isAliasDimension(level, Level.NETHER)) {
             return level.dimension();

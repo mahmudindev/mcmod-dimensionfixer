@@ -22,10 +22,10 @@ public class NetherPortalBlockHMixin {
     )
     private ResourceKey<Level> getPortalDestinationNetherKey2(
             ResourceKey<Level> original,
-            @Local(ordinal = 1) ServerLevel serverLevel
+            @Local(name = "newLevel") ServerLevel newLevel
     ) {
-        if (DimensionManager.isAliasDimension(serverLevel, Level.NETHER)) {
-            return serverLevel.dimension();
+        if (DimensionManager.isAliasDimension(newLevel, Level.NETHER)) {
+            return newLevel.dimension();
         }
 
         return original;
