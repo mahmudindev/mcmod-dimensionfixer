@@ -3,7 +3,7 @@ package com.github.mahmudindev.mcmod.dimensionfixer.mixin;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -68,7 +68,7 @@ public abstract class ServerPlayerMixin extends Player {
             method = "triggerDimensionChangeTriggers",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/advancements/criterion/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"
+                    target = "Lnet/minecraft/advancements/triggers/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"
             )
     )
     private void triggerDimensionChangeTriggersTrigger(ServerLevel oldLevel, CallbackInfo ci) {
