@@ -3,6 +3,7 @@ package com.github.mahmudindev.mcmod.dimensionfixer.config;
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionAliasData;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
+import com.github.mahmudindev.mcmod.orenocommons.platform.UnifiedPlatform;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.world.level.Level;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config {
-    private static final Path CONFIG_DIR = DimensionFixer.PLATFORM.getConfigDirectory();
+    private static final Path CONFIG_DIR = UnifiedPlatform.getConfigDir();
     private static Config CONFIG = new Config();
 
     private final Map<String, DimensionAliasData> aliases = new HashMap<>();
