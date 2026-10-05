@@ -4,6 +4,7 @@ import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionAliasData;
 import com.github.mahmudindev.mcmod.dimensionfixer.world.DimensionTweakData;
 import com.github.mahmudindev.mcmod.orenocommons.platform.UnifiedPlatform;
+import com.github.mahmudindev.mcmod.orenoconfig.config.configs.ModCommonConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.world.level.Level;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -53,24 +53,23 @@ public class Config {
     }
 
     public static void load() {
-        Gson parser = new GsonBuilder().setPrettyPrinting().create();
-
-        File configFile = CONFIG_DIR.resolve(DimensionFixer.MOD_ID + ".json").toFile();
-        if (!configFile.exists()) {
-            CONFIG.defaults();
-
-            try (FileWriter writer = new FileWriter(configFile)) {
-                writer.write(parser.toJson(CONFIG));
-            } catch (IOException e) {
-                DimensionFixer.LOGGER.error("Failed to write config", e);
-            }
-        } else {
-            try (FileReader reader = new FileReader(configFile)) {
-                CONFIG = parser.fromJson(reader, Config.class);
+        File oldConfigFile = CONFIG_DIR.resolve(DimensionFixer.MOD_ID + ".json").toFile();
+        if (oldConfigFile.exists()) {
+            try (FileReader reader = new FileReader(oldConfigFile)) {
+                Gson gson = new GsonBuilder().create();
+                CONFIG = gson.fromJson(reader, Config.class);
             } catch (IOException e) {
                 DimensionFixer.LOGGER.error("Failed to read config", e);
             }
+
+            oldConfigFile.delete();
+        } else {
+            CONFIG.defaults();
         }
+
+        ModCommonConfig config = new ModCommonConfig(DimensionFixer.MOD_ID, "dimensionfixer");
+        config.registerPojo("", CONFIG);
+        config.load();
     }
 
     public static Config getConfig() {
