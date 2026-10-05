@@ -23,7 +23,7 @@ public class DimensionManager {
     private static final Map<Identifier, DimensionAliasData> ALIASES = new HashMap<>();
     private static final Map<Identifier, DimensionTweakData> TWEAKS = new HashMap<>();
 
-    public static void onResourceManagerReload(ResourceManager manager) {
+    public static void onServerResourceManagerReload(ResourceManager manager) {
         ALIASES.clear();
         TWEAKS.clear();
 

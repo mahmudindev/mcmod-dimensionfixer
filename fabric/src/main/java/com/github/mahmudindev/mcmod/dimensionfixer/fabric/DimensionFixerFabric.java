@@ -2,11 +2,6 @@ package com.github.mahmudindev.mcmod.dimensionfixer.fabric;
 
 import com.github.mahmudindev.mcmod.dimensionfixer.DimensionFixer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 public final class DimensionFixerFabric implements ModInitializer {
     @Override
@@ -17,17 +12,5 @@ public final class DimensionFixerFabric implements ModInitializer {
 
         // Run our common setup.
         DimensionFixer.init();
-
-        ResourceLoader
-                .get(PackType.SERVER_DATA)
-                .registerReloadListener(Identifier.fromNamespaceAndPath(
-                        DimensionFixer.MOD_ID,
-                        "default"
-                ), new ResourceManagerReloadListener() {
-                    @Override
-                    public void onResourceManagerReload(ResourceManager resourceManager) {
-                        DimensionFixer.onResourceManagerReload(resourceManager);
-                    }
-                });
     }
 }
